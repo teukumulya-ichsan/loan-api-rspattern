@@ -2,39 +2,27 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"os"
 
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/teukumulya-ichsan/go-loan/config"
-	"github.com/teukumulya-ichsan/go-loan/src/loan/models"
-	"github.com/teukumulya-ichsan/go-loan/src/loan/repository"
+	ph "github.com/teukumulya-ichsan/go-loan/src/loan/controllers"
 )
 
 func main() {
 
-	db, err := config.ConnectDB()
-
+	connection, err := config.ConnectDB()
 	if err != nil {
 		fmt.Println(err)
+		os.Exit(-1)
 	}
+	r := chi.NewRouter()
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.Logger)
 
-	loanRepo := repository.NewLoanRepositoryPg(db)
-	loans, err := getAll(loanRepo)
-
-	if err != nil {
-		fmt.Print(err)
-	}
-
-	for _, v := range loans {
-		fmt.Println(v)
-	}
-
-}
-
-func getAll(repo repository.LoanRepository) (models.Loans, error) {
-	loans, err := repo.FindAll()
-
-	if err != nil {
-		return nil, err
-	}
-
-	return loans, nil
+	pHandler := ph.NewLoanHandler(connection)
+	r.Get("/loan", pHandler.Fetch)
+	http.ListenAndServe(":3000", r)
 }

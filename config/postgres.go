@@ -10,7 +10,15 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func ConnectDB() (*sql.DB, error) {
+type DB struct {
+	SQL *sql.DB
+	// Mgo *mgo.database
+}
+
+// DBConn ...
+var dbConn = &DB{}
+
+func ConnectDB() (*DB, error) {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -27,8 +35,8 @@ func ConnectDB() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	return db, nil
+	dbConn.SQL = db
+	return dbConn, nil
 }
 
 func createConnection(desc string) (*sql.DB, error) {
