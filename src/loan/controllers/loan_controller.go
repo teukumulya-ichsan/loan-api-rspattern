@@ -8,8 +8,8 @@ import (
 	"github.com/teukumulya-ichsan/go-loan/src/loan/repository"
 )
 
-// NewPostHandler ...
-func NewLoanHandler(db *config.DB) *Loan {
+// NewLoanController ...
+func NewLoanController(db *config.DB) *Loan {
 	return &Loan{
 		repo: repository.NewLoanRepositoryPg(db.SQL),
 	}

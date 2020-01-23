@@ -22,7 +22,7 @@ func main() {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Logger)
 
-	pHandler := ph.NewLoanHandler(connection)
+	pHandler := ph.NewLoanController(connection)
 	r.Get("/loan", pHandler.Fetch)
 	http.ListenAndServe(":3000", r)
 }
