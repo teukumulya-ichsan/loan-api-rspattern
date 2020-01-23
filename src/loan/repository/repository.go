@@ -6,4 +6,5 @@ import (
 
 type LoanRepository interface {
 	FindAll() (models.Loans, error)
+	FindById(string) (*models.Loan, error)
 }
