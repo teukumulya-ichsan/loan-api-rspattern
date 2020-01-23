@@ -15,7 +15,7 @@ func NewLoanRepositoryPg(db *sql.DB) *loanRepositoryPg {
 }
 
 func (r *loanRepositoryPg) FindAll() (models.Loans, error) {
-	query := `SELECT * FROM "loans"`
+	query := `SELECT * FROM "pinjaman"`
 
 	var loans models.Loans
 
@@ -30,7 +30,7 @@ func (r *loanRepositoryPg) FindAll() (models.Loans, error) {
 	for rows.Next() {
 		var loan models.Loan
 
-		err = rows.Scan(&loan.ID, &loan.Name, &loan.DateLoan, &loan.Gender, &loan.Ktp, &loan.Birthdate, &loan.Amount, &loan.Period)
+		err = rows.Scan(&loan.ID, &loan.Name, &loan.DateLoan, &loan.Gender, &loan.Ktp, &loan.BirthDate, &loan.Amount, &loan.Period)
 
 		if err != nil {
 			return nil, err
@@ -43,7 +43,7 @@ func (r *loanRepositoryPg) FindAll() (models.Loans, error) {
 }
 
 func (r *loanRepositoryPg) FindById(id string) (*models.Loan, error) {
-	query := `SELECT * FROM "loans" WHERE "id" = $1`
+	query := `SELECT * FROM "pinjaman" WHERE "id" = $1`
 
 	// variable utk menampung hasil return
 	var loan models.Loan
@@ -56,7 +56,7 @@ func (r *loanRepositoryPg) FindById(id string) (*models.Loan, error) {
 
 	defer statement.Close()
 
-	err = statement.QueryRow(id).Scan(&loan.ID, &loan.Name, &loan.DateLoan, &loan.Gender, &loan.Ktp, &loan.Birthdate, &loan.Amount, &loan.Period)
+	err = statement.QueryRow(id).Scan(&loan.ID, &loan.Name, &loan.DateLoan, &loan.Gender, &loan.Ktp, &loan.BirthDate, &loan.Amount, &loan.Period)
 
 	if err != nil {
 		return nil, err

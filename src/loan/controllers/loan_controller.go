@@ -4,9 +4,14 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-chi/chi"
 	"github.com/teukumulya-ichsan/go-loan/config"
 	"github.com/teukumulya-ichsan/go-loan/src/loan/repository"
 )
+
+type Loan struct {
+	repo repository.LoanRepository
+}
 
 // NewLoanController ...
 func NewLoanController(db *config.DB) *Loan {
@@ -15,12 +20,14 @@ func NewLoanController(db *config.DB) *Loan {
 	}
 }
 
-type Loan struct {
-	repo repository.LoanRepository
+func (p *Loan) GetAll(w http.ResponseWriter, r *http.Request) {
+	payload, _ := p.repo.FindAll()
+
+	respondwithJSON(w, http.StatusOK, payload)
 }
 
-func (p *Loan) Fetch(w http.ResponseWriter, r *http.Request) {
-	payload, _ := p.repo.FindAll()
+func (p *Loan) FindById(w http.ResponseWriter, r *http.Request) {
+	payload, _ := p.repo.FindById(chi.URLParam(r, "id"))
 
 	respondwithJSON(w, http.StatusOK, payload)
 }

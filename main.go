@@ -23,6 +23,7 @@ func main() {
 	r.Use(middleware.Logger)
 
 	pHandler := ph.NewLoanController(connection)
-	r.Get("/loan", pHandler.Fetch)
+	r.Get("/loan", pHandler.GetAll)
+	r.Get("/loan/{id}", pHandler.FindById)
 	http.ListenAndServe(":3000", r)
 }
