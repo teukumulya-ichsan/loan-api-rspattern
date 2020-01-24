@@ -1,15 +1,18 @@
-package repository
+package repositories
 
 import (
+	"context"
 	"database/sql"
 
 	"github.com/teukumulya-ichsan/go-loan/src/loan/models"
 )
 
+// loanRepositoryPg struct
 type loanRepositoryPg struct {
 	db *sql.DB
 }
 
+// NewLoanRepositoryPg constructor
 func NewLoanRepositoryPg(db *sql.DB) *loanRepositoryPg {
 	return &loanRepositoryPg{db}
 }
@@ -42,7 +45,7 @@ func (r *loanRepositoryPg) FindAll() (models.Loans, error) {
 	return loans, nil
 }
 
-func (r *loanRepositoryPg) FindById(id string) (*models.Loan, error) {
+func (r *loanRepositoryPg) FindByID(id string) (*models.Loan, error) {
 	query := `SELECT * FROM "pinjaman" WHERE "id" = $1`
 
 	// variable utk menampung hasil return
@@ -54,13 +57,51 @@ func (r *loanRepositoryPg) FindById(id string) (*models.Loan, error) {
 		return nil, err
 	}
 
-	defer statement.Close()
+	err = statement.QueryRow(id).Scan(
+		&loan.ID,
+		&loan.Name,
+		&loan.DateLoan,
+		&loan.Gender,
+		&loan.Ktp,
+		&loan.BirthDate,
+		&loan.Amount,
+		&loan.Period,
+	)
 
-	err = statement.QueryRow(id).Scan(&loan.ID, &loan.Name, &loan.DateLoan, &loan.Gender, &loan.Ktp, &loan.BirthDate, &loan.Amount, &loan.Period)
+	defer statement.Close()
 
 	if err != nil {
 		return nil, err
 	}
 
 	return &loan, nil
+}
+
+func (r *loanRepositoryPg) CreateLoan(ctx context.Context, l *models.Loan) (int64, error) {
+
+	query := `INSERT INTO "pinjaman"("name","date_loan", "gender", "ktp", "birthdate", "amount", "period")
+	VALUES($1, $2,$3,$4,$5,$6,$7)`
+
+	stmt, err := r.db.PrepareContext(ctx, query)
+	if err != nil {
+		return -1, err
+	}
+
+	res, err := stmt.ExecContext(ctx,
+		l.Name,
+		l.DateLoan,
+		l.Gender,
+		l.Ktp,
+		l.BirthDate,
+		l.Amount,
+		l.Period,
+	)
+	defer stmt.Close()
+
+	if err != nil {
+		return -1, err
+	}
+
+	return res.LastInsertId()
+
 }
