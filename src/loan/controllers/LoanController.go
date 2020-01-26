@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/teukumulya-ichsan/go-loan/config"
 	"github.com/teukumulya-ichsan/go-loan/src/loan/models"
 	"github.com/teukumulya-ichsan/go-loan/src/loan/repositories"
 )
@@ -16,9 +15,9 @@ type Loan struct {
 }
 
 // NewLoanController ...
-func NewLoanController(db *config.DB) *Loan {
+func NewLoanController() *Loan {
 	return &Loan{
-		repo: repositories.NewLoanRepositoryPg(db.SQL),
+		repo: repositories.NewLoanRepositoryPg(),
 	}
 }
 

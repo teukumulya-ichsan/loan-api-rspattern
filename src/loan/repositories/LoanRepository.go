@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/teukumulya-ichsan/go-loan/config"
 	"github.com/teukumulya-ichsan/go-loan/src/loan/models"
 )
 
@@ -13,8 +14,14 @@ type loanRepositoryPg struct {
 }
 
 // NewLoanRepositoryPg constructor
-func NewLoanRepositoryPg(db *sql.DB) *loanRepositoryPg {
-	return &loanRepositoryPg{db}
+func NewLoanRepositoryPg() *loanRepositoryPg {
+
+	// ConnectDB PostgresSql
+	dbCon, _ := config.ConnectDB()
+
+	return &loanRepositoryPg{
+		dbCon.SQL,
+	}
 }
 
 func (r *loanRepositoryPg) FindAll() (models.Loans, error) {
