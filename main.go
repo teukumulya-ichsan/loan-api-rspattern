@@ -1,28 +1,31 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
-	ph "github.com/teukumulya-ichsan/go-loan/src/loan/controllers"
+	"github.com/teukumulya-ichsan/go-loan/controllers"
+	router "github.com/teukumulya-ichsan/go-loan/http"
+	"github.com/teukumulya-ichsan/go-loan/repositories"
+	"github.com/teukumulya-ichsan/go-loan/services"
+)
+
+var (
+	loanRepository repositories.LoanRepository = repositories.NewPostgresRepository()
+	loanService    services.LoanService        = services.NewLoanServices(loanRepository)
+	loanController controllers.LoanController  = controllers.NewLoanController(loanService)
+	httpRouter     router.Router               = router.NewChiRouter()
 )
 
 func main() {
 
-	// connection, err := config.ConnectDB()
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	os.Exit(-1)
-	// }
-	r := chi.NewRouter()
-	r.Use(middleware.Recoverer)
-	r.Use(middleware.Logger)
+	const port string = ":3000"
+	httpRouter.GET("/", func(res http.ResponseWriter, req *http.Request) {
+		fmt.Fprintln(res, "Up and Running...")
+	})
 
-	pHandler := ph.NewLoanController()
-	r.Get("/loan", pHandler.FindAll)
-	r.Post("/loan", pHandler.CreateLoan)
-	r.Get("/loan/{id}", pHandler.FindByID)
+	httpRouter.GET("/loans", loanController.GetLoan)
+	httpRouter.POST("/loans", loanController.AddLoan)
 
-	http.ListenAndServe(":3000", r)
+	httpRouter.SERVE(port)
 }

@@ -1,4 +1,8 @@
-CREATE TABLE pinjaman
+-- postgresSQL dump db
+
+CREATE DATABASE db_loan;
+
+CREATE TABLE loans
 (
     id SERIAL PRIMARY KEY,
     name varchar(255) NOT NULL,
@@ -9,10 +13,10 @@ CREATE TABLE pinjaman
 
 
     -------------------------------------------------------------------------------------------
-    INSERT INTO pinjaman
+    INSERT INTO loans
         (date_loan, name, gender, ktp, birthdate, amount, period)
     values('2018-09-01', 'Wiro', 'Male', '3522582509010002', '2001-09-25', 2000000, 12);
 
-    INSERT INTO pinjaman
+    INSERT INTO loans
         (date_loan, name, gender, ktp, birthdate, amount, period)
     values('2020-01-01', 'Ichsan', 'Male', '3522582509010004', '1995-06-02', 20000000, 12);

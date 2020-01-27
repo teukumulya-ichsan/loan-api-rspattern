@@ -18,7 +18,7 @@ type DB struct {
 // DBConn ...
 var dbConn = &DB{}
 
-func ConnectDB() (*DB, error) {
+func ConnectPG() (*DB, error) {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
