@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"math/rand"
 
 	"github.com/teukumulya-ichsan/go-loan/models"
 	"github.com/teukumulya-ichsan/go-loan/repositories"
@@ -15,19 +14,26 @@ type LoanService interface {
 	FindAll() ([]models.Loan, error)
 }
 
-type service struct{}
-
-var (
-	repo repositories.LoanRepository
-)
+type service struct {
+	repositories.LoanRepository
+}
 
 // NewLoanServices Constructor ...
 func NewLoanServices(repository repositories.LoanRepository) LoanService {
-	repo = repository
-	return &service{}
+	return &service{
+		repository,
+	}
 }
 
-func (*service) Validate(loan *models.Loan) error {
+func (repo *service) Create(loan *models.Loan) (*models.Loan, error) {
+	return repo.Save(loan)
+}
+
+func (repo *service) FindAll() ([]models.Loan, error) {
+	return repo.FindAll()
+}
+
+func (repo *service) Validate(loan *models.Loan) error {
 	// validate if loan is null
 	if loan == nil {
 		err := errors.New("The Loan is Empty")
@@ -38,13 +44,4 @@ func (*service) Validate(loan *models.Loan) error {
 		return err
 	}
 	return nil
-}
-
-func (*service) Create(loan *models.Loan) (*models.Loan, error) {
-	loan.ID = rand.Int63()
-	return repo.Save(loan)
-}
-
-func (*service) FindAll() ([]models.Loan, error) {
-	return repo.FindAll()
 }

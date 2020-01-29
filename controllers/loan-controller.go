@@ -10,11 +10,9 @@ import (
 	"github.com/teukumulya-ichsan/go-loan/services"
 )
 
-type controller struct{}
-
-var (
-	loanService services.LoanService
-)
+type controller struct {
+	services.LoanService
+}
 
 // LoanController interface
 type LoanController interface {
@@ -24,22 +22,24 @@ type LoanController interface {
 
 // NewLoanController Contructor
 func NewLoanController(service services.LoanService) LoanController {
-	loanService = service
-	return &controller{}
+	return &controller{
+		service,
+	}
 }
 
-func (*controller) GetLoan(res http.ResponseWriter, req *http.Request) {
-	res.Header().Set("Content-Type", "application/json")
-	loans, err := loanService.FindAll()
+func (service *controller) GetLoan(res http.ResponseWriter, req *http.Request) {
+	loans, err := service.FindAll()
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(res).Encode(errors.ServiceError{Message: "Error getting data"})
 	}
+
+	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusOK)
 	json.NewEncoder(res).Encode(loans)
 }
 
-func (*controller) AddLoan(res http.ResponseWriter, req *http.Request) {
+func (service *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 
 	res.Header().Set("Content-Type", "application/json")
 
@@ -58,7 +58,7 @@ func (*controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 	loan.ID = rand.Int63()
 
 	// adding new data to the Loans Array
-	err1 := loanService.Validate(&loan)
+	err1 := service.Validate(&loan)
 	if err1 != nil {
 		res.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(res).Encode(errors.ServiceError{Message: err1.Error()})
@@ -66,7 +66,7 @@ func (*controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	result, err2 := loanService.Create(&loan)
+	result, err2 := service.Create(&loan)
 	if err2 != nil {
 		res.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(res).Encode(errors.ServiceError{Message: "Error Create Loan"})

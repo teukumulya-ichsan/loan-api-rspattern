@@ -24,10 +24,6 @@ func NewPostgresRepository() LoanRepository {
 	}
 }
 
-// const (
-// 	tableName string = "loans"
-// )
-
 func (r *repoPQ) FindAll() ([]models.Loan, error) {
 	ctx := context.Background()
 	query := `SELECT * FROM "loans"`
