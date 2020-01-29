@@ -65,13 +65,13 @@ func (r *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(res).Encode(errors.ServiceError{Message: isValid.Error()})
 	}
 
-	// result, err2 := r.Save(&loan)
-	// if err2 != nil {
-	// 	res.WriteHeader(http.StatusInternalServerError)
-	// 	json.NewEncoder(res).Encode(errors.ServiceError{Message: "Error Create Loan"})
+	result, err2 := r.Save(&loan)
+	if err2 != nil {
+		res.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(res).Encode(errors.ServiceError{Message: "Error Create Loan"})
 
-	// 	return
-	// }
-	// res.WriteHeader(http.StatusOK)
-	// json.NewEncoder(res).Encode(result)
+		return
+	}
+	res.WriteHeader(http.StatusOK)
+	json.NewEncoder(res).Encode(result)
 }

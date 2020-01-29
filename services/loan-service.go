@@ -1,6 +1,9 @@
 package services
 
 import (
+	"errors"
+	"strconv"
+
 	"github.com/teukumulya-ichsan/go-loan/models"
 )
 
@@ -9,19 +12,51 @@ type LoanService interface {
 	Validate(loan *models.Loan) error
 }
 
-type service struct {
-	models.Loan
-}
+type service struct{}
 
 // NewLoanServices Constructor ...
 func NewLoanServices() LoanService {
 	return &service{}
 }
 
-func (m *service) Validate(loan *models.Loan) error {
-	err := loan.IsValidLengthKtp()
+func (*service) Validate(loan *models.Loan) error {
+	isNotNull := loan.IsNotEmpty()
+	if isNotNull != nil {
+		return isNotNull
+	}
 
-	err2 := loan.IsNotEmpty()
+	ktpLengthValid := loan.IsValidLengthKtp()
+	if ktpLengthValid != nil {
+		return ktpLengthValid
+	}
 
-	return err
+	ktpIsNumber := loan.KtpIsNumber()
+	if ktpIsNumber != nil {
+		return ktpIsNumber
+	}
+
+	validProvince := verifyProvince(loan)
+	if validProvince == false {
+		return errors.New("Provinsi dari KTP tidak di izinkan")
+	}
+
+	return nil
+}
+
+func verifyProvince(loan *models.Loan) bool {
+	sliceProv, _ := strconv.Atoi(loan.Ktp[0:2])
+
+	var provPermitted = map[int]string{
+		12: "Sumatera Utara",
+		31: "DKI Jakarta",
+		32: "Jawa Barat",
+		35: "Jawa Timur",
+	}
+
+	_, isExist := provPermitted[sliceProv]
+
+	if isExist {
+		return true
+	}
+	return false
 }
