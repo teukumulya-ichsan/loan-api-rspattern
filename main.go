@@ -7,13 +7,11 @@ import (
 	"github.com/teukumulya-ichsan/go-loan/controllers"
 	router "github.com/teukumulya-ichsan/go-loan/http"
 	"github.com/teukumulya-ichsan/go-loan/repositories"
-	"github.com/teukumulya-ichsan/go-loan/services"
 )
 
 var (
 	loanRepository repositories.LoanRepository = repositories.NewPostgresRepository()
-	loanService    services.LoanService        = services.NewLoanServices(loanRepository)
-	loanController controllers.LoanController  = controllers.NewLoanController(loanService)
+	loanController controllers.LoanController  = controllers.NewLoanController(loanRepository)
 	httpRouter     router.Router               = router.NewChiRouter()
 )
 

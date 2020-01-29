@@ -2,17 +2,13 @@ package controllers
 
 import (
 	"encoding/json"
-	"math/rand"
 	"net/http"
 
 	"github.com/teukumulya-ichsan/go-loan/errors"
 	"github.com/teukumulya-ichsan/go-loan/models"
+	"github.com/teukumulya-ichsan/go-loan/repositories"
 	"github.com/teukumulya-ichsan/go-loan/services"
 )
-
-type controller struct {
-	services.LoanService
-}
 
 // LoanController interface
 type LoanController interface {
@@ -20,15 +16,23 @@ type LoanController interface {
 	AddLoan(res http.ResponseWriter, req *http.Request)
 }
 
-// NewLoanController Contructor
-func NewLoanController(service services.LoanService) LoanController {
+type controller struct {
+	repositories.LoanRepository
+}
+
+var (
+	service services.LoanService = services.NewLoanServices()
+)
+
+// NewLoanController Constructor
+func NewLoanController(repo repositories.LoanRepository) LoanController {
 	return &controller{
-		service,
+		repo,
 	}
 }
 
-func (service *controller) GetLoan(res http.ResponseWriter, req *http.Request) {
-	loans, err := service.FindAll()
+func (r *controller) GetLoan(res http.ResponseWriter, req *http.Request) {
+	loans, err := r.FindAll()
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(res).Encode(errors.ServiceError{Message: "Error getting data"})
@@ -39,13 +43,13 @@ func (service *controller) GetLoan(res http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(res).Encode(loans)
 }
 
-func (service *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
+func (r *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 
 	res.Header().Set("Content-Type", "application/json")
 
 	var loan models.Loan
 
-	//decode dari req.body ke dalam variable loan dengan cara reference "&loan"
+	//decode from req.body  into loan with reference ways "&loan"
 	err := json.NewDecoder(req.Body).Decode(&loan)
 
 	if err != nil {
@@ -55,24 +59,19 @@ func (service *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	loan.ID = rand.Int63()
-
-	// adding new data to the Loans Array
-	err1 := service.Validate(&loan)
-	if err1 != nil {
-		res.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(res).Encode(errors.ServiceError{Message: err1.Error()})
-
-		return
+	isValid := service.Validate(&loan)
+	if isValid != nil {
+		res.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(res).Encode(errors.ServiceError{Message: isValid.Error()})
 	}
 
-	result, err2 := service.Create(&loan)
-	if err2 != nil {
-		res.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(res).Encode(errors.ServiceError{Message: "Error Create Loan"})
+	// result, err2 := r.Save(&loan)
+	// if err2 != nil {
+	// 	res.WriteHeader(http.StatusInternalServerError)
+	// 	json.NewEncoder(res).Encode(errors.ServiceError{Message: "Error Create Loan"})
 
-		return
-	}
-	res.WriteHeader(http.StatusOK)
-	json.NewEncoder(res).Encode(result)
+	// 	return
+	// }
+	// res.WriteHeader(http.StatusOK)
+	// json.NewEncoder(res).Encode(result)
 }
