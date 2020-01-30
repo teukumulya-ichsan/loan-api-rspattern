@@ -24,6 +24,7 @@ func main() {
 
 	httpRouter.GET("/loans", loanController.GetLoan)
 	httpRouter.POST("/loans", loanController.AddLoan)
+	httpRouter.GET("/loans/tracked/{date}", loanController.LoanTracked)
 
 	httpRouter.SERVE(port)
 }

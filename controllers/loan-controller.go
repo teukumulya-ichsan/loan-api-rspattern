@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-chi/chi"
 	"github.com/teukumulya-ichsan/go-loan/errors"
 	"github.com/teukumulya-ichsan/go-loan/models"
 	"github.com/teukumulya-ichsan/go-loan/repositories"
@@ -14,6 +15,7 @@ import (
 type LoanController interface {
 	GetLoan(res http.ResponseWriter, req *http.Request)
 	AddLoan(res http.ResponseWriter, req *http.Request)
+	LoanTracked(res http.ResponseWriter, req *http.Request)
 }
 
 type controller struct {
@@ -74,4 +76,20 @@ func (r *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 	}
 	res.WriteHeader(http.StatusOK)
 	json.NewEncoder(res).Encode(result)
+}
+
+func (r *controller) LoanTracked(res http.ResponseWriter, req *http.Request) {
+
+	data := chi.URLParam(req, "date")
+
+	loans, err := r.GetLast7days(data)
+	if err != nil {
+		res.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(res).Encode(errors.ServiceError{Message: "Error getting data"})
+	}
+
+	res.Header().Set("Content-Type", "application/json")
+	res.WriteHeader(http.StatusOK)
+	json.NewEncoder(res).Encode(loans)
+
 }

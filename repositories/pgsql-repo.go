@@ -92,3 +92,37 @@ func (r *repoPQ) Save(loan *models.Loan) (*models.Loan, error) {
 
 	return loan, nil
 }
+
+func (r *repoPQ) GetLast7days(date string) ([]models.Loan, error) {
+	ctx := context.Background()
+
+	query := `SELECT * from "loans" WHERE "date_loan" BETWEEN $1::date - integer '6' AND $1::date;`
+
+	rows, err := r.db.QueryContext(ctx, query, date)
+	if err != nil {
+		log.Fatalf("Failed to Connect to %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+	var loans []models.Loan
+	for rows.Next() {
+		var loan models.Loan
+		err = rows.Scan(
+			&loan.ID,
+			&loan.Name,
+			&loan.DateLoan,
+			&loan.Gender,
+			&loan.Ktp,
+			&loan.BirthDate,
+			&loan.Amount,
+			&loan.Period,
+		)
+		if err != nil {
+			log.Fatalf("Failed to iterate the list of loan: %v", err)
+			return nil, err
+		}
+
+		loans = append(loans, loan)
+	}
+	return loans, nil
+}
