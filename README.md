@@ -1,1 +1,1 @@
-[![godoc](https://godoc.org/github.com/teukumulya-ichsan/go-loan?status.svg)](https://godoc.org/github.com/teukumulya-ichsan/go-loan)
+[![GoDoc](https://godoc.org/github.com/teukumulya-ichsan/loan-api-rspattern?status.svg)](https://godoc.org/github.com/teukumulya-ichsan/loan-api-rspattern)

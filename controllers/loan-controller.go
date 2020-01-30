@@ -5,10 +5,10 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/teukumulya-ichsan/go-loan/errors"
-	"github.com/teukumulya-ichsan/go-loan/models"
-	"github.com/teukumulya-ichsan/go-loan/repositories"
-	"github.com/teukumulya-ichsan/go-loan/services"
+	"github.com/teukumulya-ichsan/loan-api-rspattern/errors"
+	"github.com/teukumulya-ichsan/loan-api-rspattern/models"
+	"github.com/teukumulya-ichsan/loan-api-rspattern/repositories"
+	"github.com/teukumulya-ichsan/loan-api-rspattern/services"
 )
 
 // LoanController interface

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/teukumulya-ichsan/go-loan/models"
+	"github.com/teukumulya-ichsan/loan-api-rspattern/models"
 )
 
 // LoanService inteface ...

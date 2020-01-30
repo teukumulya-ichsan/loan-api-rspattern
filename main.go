@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/teukumulya-ichsan/go-loan/controllers"
-	router "github.com/teukumulya-ichsan/go-loan/http"
-	"github.com/teukumulya-ichsan/go-loan/repositories"
+	"github.com/teukumulya-ichsan/loan-api-rspattern/controllers"
+	router "github.com/teukumulya-ichsan/loan-api-rspattern/http"
+	"github.com/teukumulya-ichsan/loan-api-rspattern/repositories"
 )
 
 var (
@@ -17,7 +17,7 @@ var (
 
 func main() {
 
-	const port string = ":3000"
+	const port string = ":3001"
 	httpRouter.GET("/", func(res http.ResponseWriter, req *http.Request) {
 		fmt.Fprintln(res, "Up and Running...")
 	})

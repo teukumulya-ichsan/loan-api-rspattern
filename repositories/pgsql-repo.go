@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/teukumulya-ichsan/go-loan/config"
-	"github.com/teukumulya-ichsan/go-loan/models"
+	"github.com/teukumulya-ichsan/loan-api-rspattern/config"
+	"github.com/teukumulya-ichsan/loan-api-rspattern/models"
 )
 
 type repoPQ struct {

@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"github.com/teukumulya-ichsan/go-loan/models"
+	"github.com/teukumulya-ichsan/loan-api-rspattern/models"
 )
 
 // LoanRepository Interface
