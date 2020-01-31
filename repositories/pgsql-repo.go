@@ -24,6 +24,7 @@ func NewPostgresRepository() LoanRepository {
 	}
 }
 
+//FindAll ...
 func (r *repoPQ) FindAll() ([]models.Loan, error) {
 	ctx := context.Background()
 	query := `SELECT * FROM "loans"`
@@ -59,6 +60,7 @@ func (r *repoPQ) FindAll() ([]models.Loan, error) {
 
 }
 
+//Save ...
 func (r *repoPQ) Save(loan *models.Loan) (*models.Loan, error) {
 	ctx := context.Background()
 
@@ -93,6 +95,7 @@ func (r *repoPQ) Save(loan *models.Loan) (*models.Loan, error) {
 	return loan, nil
 }
 
+//GetLast7days ...
 func (r *repoPQ) GetLast7days(date string) ([]models.Loan, error) {
 	ctx := context.Background()
 

@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/teukumulya-ichsan/loan-api-rspattern/errors"
 	"github.com/teukumulya-ichsan/loan-api-rspattern/models"
 	"github.com/teukumulya-ichsan/loan-api-rspattern/repositories"
+	resp "github.com/teukumulya-ichsan/loan-api-rspattern/response"
 	"github.com/teukumulya-ichsan/loan-api-rspattern/services"
 )
 
@@ -37,7 +37,7 @@ func (r *controller) GetLoan(res http.ResponseWriter, req *http.Request) {
 	loans, err := r.FindAll()
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(res).Encode(errors.ServiceError{Message: "Error getting data"})
+		json.NewEncoder(res).Encode(resp.ResponseError{Message: "Error getting data"})
 	}
 
 	res.Header().Set("Content-Type", "application/json")
@@ -56,7 +56,7 @@ func (r *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(res).Encode(errors.ServiceError{Message: "Error marshalling the request"})
+		json.NewEncoder(res).Encode(resp.ResponseError{Message: "Error marshalling the request"})
 
 		return
 	}
@@ -64,13 +64,13 @@ func (r *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 	isValid := service.Validate(&loan)
 	if isValid != nil {
 		res.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(res).Encode(errors.ServiceError{Message: isValid.Error()})
+		json.NewEncoder(res).Encode(resp.ResponseError{Message: isValid.Error()})
 	}
 
 	result, err2 := r.Save(&loan)
 	if err2 != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(res).Encode(errors.ServiceError{Message: "Error Create Loan"})
+		json.NewEncoder(res).Encode(resp.ResponseError{Message: "Error Create Loan"})
 
 		return
 	}
@@ -80,16 +80,19 @@ func (r *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 
 func (r *controller) LoanTracked(res http.ResponseWriter, req *http.Request) {
 
-	data := chi.URLParam(req, "date")
+	date := chi.URLParam(req, "date")
 
-	loans, err := r.GetLast7days(data)
+	data, err := r.GetLast7days(date)
+
+	service.GetSummary(data)
+
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(res).Encode(errors.ServiceError{Message: "Error getting data"})
+		json.NewEncoder(res).Encode(resp.ResponseError{Message: "Error getting data"})
 	}
 
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusOK)
-	json.NewEncoder(res).Encode(loans)
+	json.NewEncoder(res).Encode(data)
 
 }
