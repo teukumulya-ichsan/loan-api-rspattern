@@ -8,8 +8,8 @@ import (
 	"github.com/teukumulya-ichsan/loan-api-rspattern/models"
 )
 
-// LoanService inteface ...
-type LoanService interface {
+// LoanService Interface ...
+type loanService interface {
 	Validate(loan *models.Loan) error
 	GetSummary(loan []models.Loan)
 }
@@ -17,10 +17,11 @@ type LoanService interface {
 type service struct{}
 
 // NewLoanServices Constructor ...
-func NewLoanServices() LoanService {
+func NewLoanServices() loanService {
 	return &service{}
 }
 
+//GetSummary ...
 func (*service) GetSummary(loan []models.Loan) {
 	var sum int64
 

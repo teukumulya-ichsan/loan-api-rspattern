@@ -21,7 +21,7 @@ type Loan struct {
 // IsValidLengthKtp method to check is KTP fixed on 16 character
 func (l *Loan) IsValidLengthKtp() error {
 	if len(l.Ktp) > 16 || len(l.Ktp) < 16 {
-		return errors.New("The Length KTP it must 16 character")
+		return errors.New("the Length KTP it must 16 character")
 	}
 	return nil
 }

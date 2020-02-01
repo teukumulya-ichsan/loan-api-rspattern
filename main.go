@@ -10,9 +10,9 @@ import (
 )
 
 var (
-	loanRepository repositories.LoanRepository = repositories.NewPostgresRepository()
-	loanController controllers.LoanController  = controllers.NewLoanController(loanRepository)
-	httpRouter     router.Router               = router.NewChiRouter()
+	loanRepository = repositories.NewPostgresRepository()
+	loanController = controllers.NewLoanController(loanRepository)
+	httpRouter     = router.NewChiRouter()
 )
 
 func main() {

@@ -10,6 +10,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
+//DB struct
 type DB struct {
 	SQL *sql.DB
 	// Mgo *mgo.database
@@ -18,6 +19,7 @@ type DB struct {
 // DBConn ...
 var dbConn = &DB{}
 
+// ConnectPG ...
 func ConnectPG() (*DB, error) {
 	err := godotenv.Load()
 	if err != nil {

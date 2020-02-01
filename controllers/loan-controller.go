@@ -11,8 +11,8 @@ import (
 	"github.com/teukumulya-ichsan/loan-api-rspattern/services"
 )
 
-// LoanController interface
-type LoanController interface {
+// loanController interface
+type loanController interface {
 	GetLoan(res http.ResponseWriter, req *http.Request)
 	AddLoan(res http.ResponseWriter, req *http.Request)
 	LoanTracked(res http.ResponseWriter, req *http.Request)
@@ -23,21 +23,22 @@ type controller struct {
 }
 
 var (
-	service services.LoanService = services.NewLoanServices()
+	service = services.NewLoanServices()
 )
 
 // NewLoanController Constructor
-func NewLoanController(repo repositories.LoanRepository) LoanController {
+func NewLoanController(repo repositories.LoanRepository) loanController {
 	return &controller{
 		repo,
 	}
 }
 
-func (r *controller) GetLoan(res http.ResponseWriter, req *http.Request) {
+// GetLoan ...
+func (r *controller) GetLoan(res http.ResponseWriter, _ *http.Request) {
 	loans, err := r.FindAll()
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(res).Encode(resp.ResponseError{Message: "Error getting data"})
+		json.NewEncoder(res).Encode(resp.Error{Message: "Error getting data"})
 	}
 
 	res.Header().Set("Content-Type", "application/json")
@@ -45,6 +46,7 @@ func (r *controller) GetLoan(res http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(res).Encode(loans)
 }
 
+// AddLoan ...
 func (r *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 
 	res.Header().Set("Content-Type", "application/json")
@@ -56,7 +58,7 @@ func (r *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(res).Encode(resp.ResponseError{Message: "Error marshalling the request"})
+		json.NewEncoder(res).Encode(resp.Error{Message: "Error marshalling the request"})
 
 		return
 	}
@@ -64,13 +66,13 @@ func (r *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 	isValid := service.Validate(&loan)
 	if isValid != nil {
 		res.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(res).Encode(resp.ResponseError{Message: isValid.Error()})
+		json.NewEncoder(res).Encode(resp.Error{Message: isValid.Error()})
 	}
 
 	result, err2 := r.Save(&loan)
 	if err2 != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(res).Encode(resp.ResponseError{Message: "Error Create Loan"})
+		json.NewEncoder(res).Encode(resp.Error{Message: "Error Create Loan"})
 
 		return
 	}
@@ -78,6 +80,7 @@ func (r *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(res).Encode(result)
 }
 
+// LoanTracked ...
 func (r *controller) LoanTracked(res http.ResponseWriter, req *http.Request) {
 
 	date := chi.URLParam(req, "date")
@@ -88,7 +91,7 @@ func (r *controller) LoanTracked(res http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(res).Encode(resp.ResponseError{Message: "Error getting data"})
+		json.NewEncoder(res).Encode(resp.Error{Message: "Error getting data"})
 	}
 
 	res.Header().Set("Content-Type", "application/json")
