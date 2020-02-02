@@ -34,6 +34,7 @@ func (*service) GetSummary(loan []models.Loan) {
 	fmt.Println(count, sum, avg)
 }
 
+//Validate Service
 func (*service) Validate(loan *models.Loan) error {
 	isNotNull := loan.IsNotEmpty()
 	if isNotNull != nil {

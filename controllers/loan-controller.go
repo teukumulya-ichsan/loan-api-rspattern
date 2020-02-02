@@ -38,12 +38,13 @@ func (r *controller) GetLoan(res http.ResponseWriter, _ *http.Request) {
 	loans, err := r.FindAll()
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(res).Encode(resp.Error{Message: "Error getting data"})
+		//json.NewEncoder(res).Encode(resp.Error{message: "Error getting data"})
+		json.NewEncoder(res).Encode(resp.Error{Message: "Error Getting Data"})
 	}
 
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusOK)
-	json.NewEncoder(res).Encode(loans)
+	json.NewEncoder(res).Encode(resp.Respond{Data: loans})
 }
 
 // AddLoan ...
@@ -69,7 +70,7 @@ func (r *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(res).Encode(resp.Error{Message: isValid.Error()})
 	}
 
-	result, err2 := r.Save(&loan)
+	_, err2 := r.Save(&loan)
 	if err2 != nil {
 		res.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(res).Encode(resp.Error{Message: "Error Create Loan"})
@@ -77,16 +78,19 @@ func (r *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	res.WriteHeader(http.StatusOK)
-	json.NewEncoder(res).Encode(result)
+	json.NewEncoder(res).Encode(resp.Respond{Message: "Loans is Created"})
 }
 
 // LoanTracked ...
 func (r *controller) LoanTracked(res http.ResponseWriter, req *http.Request) {
 
+	// getting date from URL params
 	date := chi.URLParam(req, "date")
 
+	// get last 7 days data by date
 	data, err := r.GetLast7days(date)
 
+	// processing data to get summary of data
 	service.GetSummary(data)
 
 	if err != nil {
@@ -96,6 +100,6 @@ func (r *controller) LoanTracked(res http.ResponseWriter, req *http.Request) {
 
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusOK)
-	json.NewEncoder(res).Encode(data)
-
+	//json.NewEncoder(res).Encode(data)
+	json.NewEncoder(res).Encode(resp.Respond{Data: data})
 }
