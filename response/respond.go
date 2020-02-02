@@ -6,11 +6,12 @@ import "github.com/teukumulya-ichsan/loan-api-rspattern/models"
 type Respond struct {
 	Message string        `json:"message"`
 	Data    []models.Loan `json:"data"`
+	Summary []Info        `json:"info"`
 }
 
-//summary struct ...
-type summary struct {
-	Count   int32
-	Sum     int64
-	Average float64
+//Info struct ...
+type Info struct {
+	Count   int64   `json:"count"`
+	Sum     int64   `json:"summary"`
+	Average float64 `json:"7-day-avg"`
 }

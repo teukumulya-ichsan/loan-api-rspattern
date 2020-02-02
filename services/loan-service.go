@@ -3,35 +3,45 @@ package services
 import (
 	"errors"
 	"fmt"
-	"strconv"
-
 	"github.com/teukumulya-ichsan/loan-api-rspattern/models"
+	resp "github.com/teukumulya-ichsan/loan-api-rspattern/response"
+	"strconv"
 )
 
 // LoanService Interface ...
-type loanService interface {
+type LoanService interface {
 	Validate(loan *models.Loan) error
-	GetSummary(loan []models.Loan)
+	GetSummary(loan []models.Loan) ([]resp.Info, error)
 }
 
 type service struct{}
 
 // NewLoanServices Constructor ...
-func NewLoanServices() loanService {
+func NewLoanServices() LoanService {
 	return &service{}
 }
 
 //GetSummary ...
-func (*service) GetSummary(loan []models.Loan) {
-	var sum int64
+func (*service) GetSummary(loan []models.Loan) ([]resp.Info, error) {
 
+	var sum int64
 	for i := range loan {
 		sum = sum + loan[i].Amount
 	}
 	count := int64(len(loan))
-	avg := sum / count
+	avg := float64(sum / count)
 
-	fmt.Println(count, sum, avg)
+	fmt.Println(count, sum, avg) // example trace result
+
+	var summary = []resp.Info{
+		{
+			Count:   count,
+			Sum:     sum,
+			Average: avg,
+		},
+	}
+
+	return summary, nil
 }
 
 //Validate Service

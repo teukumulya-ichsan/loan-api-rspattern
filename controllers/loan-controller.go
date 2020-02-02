@@ -91,7 +91,7 @@ func (r *controller) LoanTracked(res http.ResponseWriter, req *http.Request) {
 	data, err := r.GetLast7days(date)
 
 	// processing data to get summary of data
-	service.GetSummary(data)
+	summary,_ := service.GetSummary(data)
 
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
@@ -101,5 +101,5 @@ func (r *controller) LoanTracked(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusOK)
 	//json.NewEncoder(res).Encode(data)
-	json.NewEncoder(res).Encode(resp.Respond{Data: data})
+	json.NewEncoder(res).Encode(resp.Respond{Data: data, Summary: summary})
 }
