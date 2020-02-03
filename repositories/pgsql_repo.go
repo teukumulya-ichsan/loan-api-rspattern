@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"database/sql"
+	"github.com/teukumulya-ichsan/loan-api-rspattern/interface"
 	"log"
 
 	"github.com/teukumulya-ichsan/loan-api-rspattern/config"
@@ -14,7 +15,7 @@ type repoPQ struct {
 }
 
 // NewPostgresRepository Constructor
-func NewPostgresRepository() LoanRepository {
+func NewPostgresRepository() _interface.LoanRepository {
 
 	// ConnectDB PostgresSql
 	dbCon, _ := config.ConnectPG()

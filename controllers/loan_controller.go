@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"encoding/json"
+	"github.com/teukumulya-ichsan/loan-api-rspattern/interface"
 	"net/http"
 
 	"github.com/go-chi/chi"
 	"github.com/teukumulya-ichsan/loan-api-rspattern/models"
-	"github.com/teukumulya-ichsan/loan-api-rspattern/repositories"
 	resp "github.com/teukumulya-ichsan/loan-api-rspattern/response"
 	"github.com/teukumulya-ichsan/loan-api-rspattern/services"
 )
@@ -19,7 +19,7 @@ type loanController interface {
 }
 
 type controller struct {
-	repositories.LoanRepository
+	_interface.LoanRepository
 }
 
 var (
@@ -27,7 +27,7 @@ var (
 )
 
 // NewLoanController Constructor
-func NewLoanController(repo repositories.LoanRepository) loanController {
+func NewLoanController(repo _interface.LoanRepository) loanController {
 	return &controller{
 		repo,
 	}
@@ -70,7 +70,7 @@ func (r *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(res).Encode(resp.Error{Message: isValid.Error()})
 	}
 
-	_, err2 := r.Save(&loan)
+	result, err2 := r.Save(&loan)
 	if err2 != nil {
 		res.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(res).Encode(resp.Error{Message: "Error Create Loan"})
@@ -78,7 +78,7 @@ func (r *controller) AddLoan(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	res.WriteHeader(http.StatusOK)
-	json.NewEncoder(res).Encode(resp.Respond{Message: "Loans is Created"})
+	json.NewEncoder(res).Encode(result)
 }
 
 // LoanTracked ...
@@ -91,7 +91,7 @@ func (r *controller) LoanTracked(res http.ResponseWriter, req *http.Request) {
 	data, err := r.GetLast7days(date)
 
 	// processing data to get summary of data
-	summary,_ := service.GetSummary(data)
+	summary, _ := service.GetSummary(data)
 
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)

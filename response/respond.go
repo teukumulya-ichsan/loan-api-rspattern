@@ -4,7 +4,6 @@ import "github.com/teukumulya-ichsan/loan-api-rspattern/models"
 
 //Respond ...
 type Respond struct {
-	Message string        `json:"message"`
 	Data    []models.Loan `json:"data"`
 	Summary []Info        `json:"info"`
 }

@@ -1,4 +1,4 @@
-package repositories
+package _interface
 
 import (
 	"github.com/teukumulya-ichsan/loan-api-rspattern/models"
