@@ -1,3 +1,11 @@
 gin-bin
-.idea/
-vendor
+.idea/.gitignore
+.idea/inspectionProfiles/
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+Gopkg.lock
+vendor/
+Gopkg.toml
+.idea/loan-api-rspattern.iml
+.idea/workspace.xml

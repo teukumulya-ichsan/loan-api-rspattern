@@ -19,7 +19,7 @@ func main() {
 
 	const port string = ":3001"
 	httpRouter.GET("/", func(res http.ResponseWriter, req *http.Request) {
-		fmt.Fprintln(res, "Up and Running...")
+		_, _ = fmt.Fprintln(res, "Up and Running...")
 	})
 
 	httpRouter.GET("/loans", loanController.GetLoan)
