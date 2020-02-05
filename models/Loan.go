@@ -10,6 +10,7 @@ import (
 type Loan struct {
 	ID        int64  `json:"id"`
 	Name      string `json:"name"`
+
 	DateLoan  string `json:"date_loan"`
 	Gender    string `json:"gender"`
 	Ktp       string `json:"ktp"`
