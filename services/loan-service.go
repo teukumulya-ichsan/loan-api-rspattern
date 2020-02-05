@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 	"github.com/teukumulya-ichsan/loan-api-rspattern/models"
 	resp "github.com/teukumulya-ichsan/loan-api-rspattern/response"
 	"strconv"
@@ -31,9 +30,9 @@ func (*service) GetSummary(loan []models.Loan) ([]resp.Info, error) {
 	count := int64(len(loan))
 	avg := float64(sum / count)
 
-	fmt.Println(count, sum, avg) // example trace result
+	//fmt.Println(count, sum, avg) // example trace result
 
-	var summary = []resp.Info{
+		var summary = []resp.Info{
 		{
 			Count:   count,
 			Sum:     sum,
@@ -46,6 +45,7 @@ func (*service) GetSummary(loan []models.Loan) ([]resp.Info, error) {
 
 //Validate Service
 func (*service) Validate(loan *models.Loan) error {
+
 	isNotNull := loan.IsNotEmpty()
 	if isNotNull != nil {
 		return isNotNull
